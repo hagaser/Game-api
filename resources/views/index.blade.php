@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Document</title> <!-- There no need look here, there is nothing interesting -->
 </head>
 <body>
     <h1>This api supports next requests:</h1>

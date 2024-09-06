@@ -15,7 +15,7 @@ class Game extends Model
     ];
 
     public function genreNames()
-    {
+    { // Connect tables
         return $this->hasMany(Genre::class);
     }
 }

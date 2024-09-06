@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 
 class GameController extends Controller
 {
-    public function store(Request $request)
+    public function store(Request $request) // Create
     {
         $game = Game::create($request->only(['name', 'developer']));
 
@@ -18,7 +18,8 @@ class GameController extends Controller
         return response()->json($game->load('genreNames'), 201);
     }
 
-    public function index(Request $request)
+
+    public function index(Request $request) // Index (read)
     {
     $query = Game::with('genreNames');
 
@@ -33,12 +34,13 @@ class GameController extends Controller
     }
 
 
-    public function show($id)
+    public function show($id) // Read
     {
         return Game::with('genreNames')->findOrFail($id);
     }
 
-    public function update(Request $request, $id)
+
+    public function update(Request $request, $id) // Update
     {
         $game = Game::findOrFail($id);
         $game->update($request->only(['name', 'developer']));
@@ -51,7 +53,8 @@ class GameController extends Controller
         return response()->json($game->load('genreNames'), 200);
     }
 
-    public function destroy($id)
+
+    public function destroy($id) // Delete
     {
         $game = Game::findOrFail($id);
         $game->delete();

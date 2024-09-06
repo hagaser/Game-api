@@ -12,7 +12,7 @@ class Genre extends Model
     protected $fillable = ['genreName'];
 
     public function game()
-    {
+    { // Connect tables
         return $this->belongsTo(Game::class);
     }
 }
