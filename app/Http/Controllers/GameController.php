@@ -2,63 +2,46 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Game;
+use App\Http\Requests\GameRequest;
+use App\Services\GameService;
 use Illuminate\Http\Request;
 
 class GameController extends Controller
 {
-    public function store(Request $request) // Create
+    protected $gameService;
+
+    public function __construct(GameService $gameService)
     {
-        $game = Game::create($request->only(['name', 'developer']));
-
-        foreach ($request->genres as $genreName) {
-            $game->genreNames()->create(['genreName' => $genreName]);
-        }
-
-        return response()->json($game->load('genreNames'), 201);
+        $this->gameService = $gameService;
     }
 
-
-    public function index(Request $request) // Index (read)
+    public function store(GameRequest $request)
     {
-    $query = Game::with('genreNames');
-
-    if ($request->has('genres')) {
-        $genres = explode(',', $request->genres);
-        $query->whereHas('genreNames', function($q) use ($genres) {
-            $q->whereIn('genreName', $genres);
-        }, '=', count($genres));
+        $game = $this->gameService->createGame($request->all());
+        return response()->json($game, 201);
     }
 
-    return $query->get();
+    public function index(Request $request)
+    {
+        $games = $this->gameService->getGames($request->all());
+        return response()->json($games);
     }
 
-
-    public function show($id) // Read
+    public function show($id)
     {
-        return Game::with('genreNames')->findOrFail($id);
+        $game = $this->gameService->getGameById($id);
+        return response()->json($game);
     }
 
-
-    public function update(Request $request, $id) // Update
+    public function update(GameRequest $request, $id)
     {
-        $game = Game::findOrFail($id);
-        $game->update($request->only(['name', 'developer']));
-
-        $game->genreNames()->delete();
-        foreach ($request->genres as $genreName) {
-            $game->genreNames()->create(['genreName' => $genreName]);
-        }
-
-        return response()->json($game->load('genreNames'), 200);
+        $game = $this->gameService->updateGame($request->all(), $id);
+        return response()->json($game, 200);
     }
 
-
-    public function destroy($id) // Delete
+    public function destroy($id)
     {
-        $game = Game::findOrFail($id);
-        $game->delete();
-
+        $this->gameService->deleteGame($id);
         return response()->json(null, 204);
     }
 }
